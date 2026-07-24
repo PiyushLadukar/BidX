@@ -4,7 +4,10 @@ from fastapi import FastAPI
 from app.core.config import settings
 from app.database.database import Base, engine
 
-# Import models so SQLAlchemy knows about them
+from app.routers.auth import router as auth_router
+from app.routers.auction import router as auction_router
+from app.routers.bid import router as bid_router
+
 from app.models import *
 
 
@@ -35,3 +38,7 @@ def health():
     return {
         "status": "healthy",
     }
+
+app.include_router(auth_router)
+app.include_router(auction_router)
+app.include_router(bid_router)
