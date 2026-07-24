@@ -10,29 +10,84 @@ class Auction(Base):
 
     id = Column(Integer, primary_key=True, index=True)
 
-    tenant_id = Column(Integer, ForeignKey("tenants.id"), nullable=False)
+    tenant_id = Column(
+        Integer,
+        ForeignKey("tenants.id"),
+        nullable=False
+    )
 
-    title = Column(String(255), nullable=False)
+    title = Column(
+        String(255),
+        nullable=False
+    )
 
-    description = Column(Text, nullable=True)
+    description = Column(
+        Text,
+        nullable=True
+    )
 
-    category = Column(String(100), nullable=False)
+    category = Column(
+        String(100),
+        nullable=False
+    )
 
-    quantity = Column(Integer, nullable=False)
+    quantity = Column(
+        Integer,
+        nullable=False
+    )
 
-    starting_price = Column(Float, nullable=False)
+    starting_price = Column(
+        Float,
+        nullable=False
+    )
 
-    current_lowest_bid = Column(Float, nullable=True)
+    current_lowest_bid = Column(
+        Float,
+        nullable=True
+    )
 
-    status = Column(String(20), default="OPEN")  # OPEN, CLOSED, CANCELLED
+    # active | closed | cancelled
+    status = Column(
+        String(20),
+        default="active",
+        nullable=False
+    )
 
-    start_time = Column(DateTime(timezone=True), nullable=False)
+    start_time = Column(
+        DateTime(timezone=True),
+        nullable=False
+    )
 
-    end_time = Column(DateTime(timezone=True), nullable=False)
+    end_time = Column(
+        DateTime(timezone=True),
+        nullable=False
+    )
 
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    created_at = Column(
+        DateTime(timezone=True),
+        server_default=func.now()
+    )
 
-    tenant = relationship("Tenant", back_populates="auctions")
+    closed_at = Column(
+        DateTime(timezone=True),
+        nullable=True
+    )
+
+    winner_vendor_id = Column(
+        Integer,
+        ForeignKey("users.id"),
+        nullable=True
+    )
+
+    winning_bid = Column(
+        Float,
+        nullable=True
+    )
+
+    tenant = relationship(
+        "Tenant",
+        back_populates="auctions"
+    )
 
     bids = relationship(
         "Bid",
@@ -44,4 +99,9 @@ class Auction(Base):
         "AIAlert",
         back_populates="auction",
         cascade="all, delete-orphan"
+    )
+
+    winner = relationship(
+        "User",
+        foreign_keys=[winner_vendor_id]
     )
