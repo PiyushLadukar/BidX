@@ -4,6 +4,11 @@ from sqlalchemy.orm import Session
 from app.database.database import get_db
 from app.schemas.auction import AuctionCreate, AuctionUpdate
 from app.services.auction_service import AuctionService
+from app.core.dependencies import (
+    hospital_required,
+    get_current_user,
+)
+from app.models.user import User
 
 router = APIRouter(
     prefix="/auctions",
@@ -14,11 +19,14 @@ router = APIRouter(
 @router.post("/")
 def create_auction(
     data: AuctionCreate,
+    current_user: User = Depends(hospital_required),
     db: Session = Depends(get_db),
 ):
-    # Temporary tenant_id until JWT authentication is integrated
-    auction = AuctionService.create(db, tenant_id=1, data=data)
-    return auction
+    return AuctionService.create(
+        db=db,
+        tenant_id=current_user.tenant_id,
+        data=data,
+    )
 
 
 @router.get("/")

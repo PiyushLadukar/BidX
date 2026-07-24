@@ -15,6 +15,15 @@ class AuthService:
     @staticmethod
     def register(db: Session, data: RegisterRequest):
 
+        existing_user = (
+            db.query(User)
+            .filter(User.email == data.email)
+            .first()
+        )
+
+        if existing_user:
+            raise ValueError("Email already registered")
+
         tenant = Tenant(
             name=data.tenant_name,
             organization_type=data.role,
@@ -41,9 +50,11 @@ class AuthService:
     @staticmethod
     def login(db: Session, email: str, password: str):
 
-        user = db.query(User).filter(
-            User.email == email
-        ).first()
+        user = (
+            db.query(User)
+            .filter(User.email == email)
+            .first()
+        )
 
         if not user:
             return None

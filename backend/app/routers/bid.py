@@ -4,6 +4,8 @@ from sqlalchemy.orm import Session
 from app.database.database import get_db
 from app.schemas.bid import BidCreate
 from app.services.bid_service import BidService
+from app.core.dependencies import vendor_required
+from app.models.user import User
 
 router = APIRouter(
     prefix="/bids",
@@ -14,13 +16,13 @@ router = APIRouter(
 @router.post("/")
 def place_bid(
     data: BidCreate,
+    current_user: User = Depends(vendor_required),
     db: Session = Depends(get_db),
 ):
-    # Temporary vendor_id until JWT is integrated
     bid, error = BidService.create(
-        db,
-        data.auction_id,
-        vendor_id=1,
+        db=db,
+        auction_id=data.auction_id,
+        vendor_id=current_user.id,
         amount=data.bid_amount,
     )
 
