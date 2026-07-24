@@ -1,16 +1,47 @@
-from sqlalchemy import Column, Integer, String, Float, DateTime
+from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Float
+from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
-from app.database.base import Base
+from app.database.database import Base
 
 
 class Auction(Base):
     __tablename__ = "auctions"
 
     id = Column(Integer, primary_key=True, index=True)
-    title = Column(String, nullable=False)
-    description = Column(String, nullable=True)
+
+    tenant_id = Column(Integer, ForeignKey("tenants.id"), nullable=False)
+
+    title = Column(String(255), nullable=False)
+
+    description = Column(Text, nullable=True)
+
+    category = Column(String(100), nullable=False)
+
+    quantity = Column(Integer, nullable=False)
+
     starting_price = Column(Float, nullable=False)
-    current_price = Column(Float, nullable=False)
-    status = Column(String, default="active")
+
+    current_lowest_bid = Column(Float, nullable=True)
+
+    status = Column(String(20), default="OPEN")  # OPEN, CLOSED, CANCELLED
+
+    start_time = Column(DateTime(timezone=True), nullable=False)
+
+    end_time = Column(DateTime(timezone=True), nullable=False)
+
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    tenant = relationship("Tenant", back_populates="auctions")
+
+    bids = relationship(
+        "Bid",
+        back_populates="auction",
+        cascade="all, delete-orphan"
+    )
+
+    ai_alerts = relationship(
+        "AIAlert",
+        back_populates="auction",
+        cascade="all, delete-orphan"
+    )

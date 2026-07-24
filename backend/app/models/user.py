@@ -1,12 +1,29 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
+from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
 
-from app.database.base import Base
+from app.database.database import Base
 
 
 class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
-    email = Column(String, unique=True, index=True, nullable=False)
-    hashed_password = Column(String, nullable=False)
-    full_name = Column(String, nullable=True)
+
+    tenant_id = Column(Integer, ForeignKey("tenants.id"), nullable=False)
+
+    full_name = Column(String(100), nullable=False)
+
+    email = Column(String(255), unique=True, nullable=False, index=True)
+
+    password_hash = Column(String(255), nullable=False)
+
+    role = Column(String(20), nullable=False)  # hospital_admin | vendor
+
+    company_name = Column(String(255), nullable=True)
+
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    tenant = relationship("Tenant", back_populates="users")
+
+    bids = relationship("Bid", back_populates="vendor")
