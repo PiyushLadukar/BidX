@@ -57,3 +57,16 @@ class AuctionService:
 
         db.delete(auction)
         db.commit()
+
+    @staticmethod
+    def close(
+        db: Session,
+        auction: Auction,
+      ):
+
+     auction.status = "closed"
+
+     db.commit()
+     db.refresh(auction)
+
+     return auction    

@@ -87,3 +87,25 @@ def delete_auction(
     return {
         "message": "Auction deleted successfully"
     }
+
+@router.patch("/{auction_id}/close")
+def close_auction(
+    auction_id: int,
+    current_user: User = Depends(hospital_required),
+    db: Session = Depends(get_db),
+):
+    auction = AuctionService.get_by_id(
+        db,
+        auction_id,
+    )
+
+    if not auction:
+        raise HTTPException(
+            status_code=404,
+            detail="Auction not found",
+        )
+
+    return AuctionService.close(
+        db,
+        auction,
+    )

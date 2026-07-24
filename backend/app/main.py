@@ -8,6 +8,8 @@ from app.routers.auth import router as auth_router
 from app.routers.auction import router as auction_router
 from app.routers.bid import router as bid_router
 
+from app.routers.ai_alert import router as ai_router
+
 from app.models import *
 
 
@@ -42,3 +44,4 @@ def health():
 app.include_router(auth_router)
 app.include_router(auction_router)
 app.include_router(bid_router)
+app.include_router(ai_router)

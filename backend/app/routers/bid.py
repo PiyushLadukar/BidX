@@ -44,3 +44,21 @@ def get_bids(
         db,
         auction_id,
     )
+
+@router.get("/{auction_id}/lowest")
+def lowest_bid(
+    auction_id: int,
+    db: Session = Depends(get_db),
+):
+    bid = BidService.get_lowest_bid(
+        db,
+        auction_id,
+    )
+
+    if not bid:
+        raise HTTPException(
+            status_code=404,
+            detail="No bids found",
+        )
+
+    return bid
