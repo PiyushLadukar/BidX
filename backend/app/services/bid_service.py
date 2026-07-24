@@ -1,5 +1,8 @@
+import asyncio
+
 from sqlalchemy.orm import Session
 
+from app.core.websocket_manager import manager
 from app.models.auction import Auction
 from app.models.bid import Bid
 from app.services.ai_service import AIService
@@ -42,16 +45,43 @@ class BidService:
             .first()
         )
 
+        # -------------------------
+        # Update Existing Bid
+        # -------------------------
         if existing_bid:
+
             existing_bid.bid_amount = amount
+            auction.current_lowest_bid = amount
+
             db.commit()
             db.refresh(existing_bid)
 
-            auction.current_lowest_bid = amount
-            db.commit()
+            AIService.analyze_bid(
+                db=db,
+                auction=auction,
+                bid=existing_bid,
+            )
+
+            try:
+                asyncio.create_task(
+                    manager.broadcast(
+                        auction.id,
+                        {
+                            "event": "new_bid",
+                            "auction_id": auction.id,
+                            "vendor_id": vendor_id,
+                            "lowest_bid": amount,
+                        },
+                    )
+                )
+            except RuntimeError:
+                pass
 
             return existing_bid, None
 
+        # -------------------------
+        # Create New Bid
+        # -------------------------
         bid = Bid(
             auction_id=auction_id,
             vendor_id=vendor_id,
@@ -64,6 +94,27 @@ class BidService:
 
         db.commit()
         db.refresh(bid)
+
+        AIService.analyze_bid(
+            db=db,
+            auction=auction,
+            bid=bid,
+        )
+
+        try:
+            asyncio.create_task(
+                manager.broadcast(
+                    auction.id,
+                    {
+                        "event": "new_bid",
+                        "auction_id": auction.id,
+                        "vendor_id": vendor_id,
+                        "lowest_bid": amount,
+                    },
+                )
+            )
+        except RuntimeError:
+            pass
 
         return bid, None
 
@@ -92,6 +143,3 @@ class BidService:
             .order_by(Bid.bid_amount.asc())
             .first()
         )
-
-
-    
