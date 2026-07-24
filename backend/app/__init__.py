@@ -1,0 +1,1 @@
+"""BidX backend application package."""
