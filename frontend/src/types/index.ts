@@ -1,18 +1,22 @@
-export type UserRole = "hospital" | "vendor";
+export type UserRole = "hospital" | "vendor" | string;
 
 export interface User {
-  id: string;
-  name: string;
+  id: number;
+  full_name: string;
   email: string;
   role: UserRole;
-  organization?: string;
+  company_name?: string | null;
   created_at?: string;
 }
 
-export interface AuthResponse {
+export interface LoginResponse {
   access_token: string;
   token_type: string;
-  user?: User;
+}
+
+export interface RegisterResponse {
+  message: string;
+  user_id: number;
 }
 
 export interface LoginPayload {
@@ -21,66 +25,67 @@ export interface LoginPayload {
 }
 
 export interface RegisterPayload {
-  name: string;
+  full_name: string;
   email: string;
   password: string;
   role: UserRole;
-  organization?: string;
+  company_name?: string | null;
+  tenant_name: string;
 }
 
-export type AuctionStatus = "open" | "closed" | "pending";
+export type AuctionStatus = "open" | "active" | "closed" | "pending";
 
 export interface Auction {
-  id: string;
+  id: number;
   title: string;
-  description: string;
-  category?: string;
-  quantity?: number;
-  unit?: string;
-  status: AuctionStatus;
+  description: string | null;
+  category: string;
+  quantity: number;
+  status: AuctionStatus | string;
   starting_price: number;
-  lowest_bid?: number | null;
-  hospital_id?: string;
-  hospital_name?: string;
-  created_at: string;
-  closing_time: string;
+  current_lowest_bid?: number | null;
+  start_time?: string;
+  end_time?: string;
+  created_at?: string;
+  closed_at?: string | null;
+  tenant_id?: number;
   bid_count?: number;
 }
 
 export interface CreateAuctionPayload {
   title: string;
-  description: string;
-  category?: string;
-  quantity?: number;
-  unit?: string;
+  description?: string | null;
+  category: string;
+  quantity: number;
   starting_price: number;
-  closing_time: string;
+  start_time: string;
+  end_time: string;
 }
 
 export interface Bid {
-  id: string;
-  auction_id: string;
-  vendor_id: string;
-  vendor_name?: string;
-  amount: number;
+  id: number;
+  auction_id: number;
+  vendor_id: number;
+  bid_amount: number;
   created_at: string;
+  vendor_name?: string;
 }
 
 export interface CreateBidPayload {
-  auction_id: string;
-  amount: number;
+  auction_id: number;
+  bid_amount: number;
 }
 
 export type AlertSeverity = "low" | "medium" | "high" | "critical";
 
 export interface Alert {
-  id: string;
-  title: string;
+  id: number;
+  auction_id: number;
+  alert_type: string;
+  severity: AlertSeverity | string;
   description: string;
-  severity: AlertSeverity;
-  risk_score?: number;
-  auction_id?: string;
   created_at: string;
+  title?: string;
 }
 
 export interface ApiError {

@@ -33,20 +33,18 @@ export default function Dashboard() {
   );
 
   const total = auctions?.length ?? 0;
-  const active = auctions?.filter((a) => a.status === "open").length ?? 0;
-  const closed = auctions?.filter((a) => a.status === "closed").length ?? 0;
-  const vendorNames = new Set(
-    (auctions ?? []).flatMap((a) => (a.hospital_name ? [a.hospital_name] : []))
-  );
+  const active = auctions?.filter((a) => (a.status ?? "").toLowerCase() === "active" || (a.status ?? "").toLowerCase() === "open").length ?? 0;
+  const closed = auctions?.filter((a) => (a.status ?? "").toLowerCase() === "closed").length ?? 0;
+  const vendorNames = new Set<string>();
   const spend = (auctions ?? []).reduce(
-    (sum, a) => sum + (a.lowest_bid ?? a.starting_price ?? 0),
+    (sum, a) => sum + (a.current_lowest_bid ?? a.starting_price ?? 0),
     0
   );
   const openAlerts = alerts?.length ?? 0;
 
   const recent = [...(auctions ?? [])]
     .sort(
-      (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      (a, b) => new Date(b.created_at ?? 0).getTime() - new Date(a.created_at ?? 0).getTime()
     )
     .slice(0, 4);
 
@@ -55,7 +53,7 @@ export default function Dashboard() {
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-[#111827]">
-            Welcome back, {user?.name?.split(" ")[0] ?? "there"}
+            Welcome back, {user?.full_name?.split(" ")[0] ?? "there"}
           </h1>
           <p className="mt-1 text-sm text-[#6B7280]">
             {user?.role === "hospital"
@@ -186,7 +184,7 @@ export default function Dashboard() {
                   >
                     <div className="mb-2 flex items-center justify-between gap-2">
                       <p className="line-clamp-1 text-sm font-medium text-[#111827]">
-                        {alert.title}
+                        {alert.title ?? alert.alert_type}
                       </p>
                       <Badge tone={severityTone(alert.severity)}>{alert.severity}</Badge>
                     </div>

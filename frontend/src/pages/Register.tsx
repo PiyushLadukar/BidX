@@ -12,11 +12,12 @@ import { cn } from "../utils/helpers";
 import type { ApiError } from "../types";
 
 const schema = z.object({
-  name: z.string().min(2, "Enter your full name"),
-  organization: z.string().min(2, "Enter your organization name"),
+  full_name: z.string().min(2, "Enter your full name"),
+  company_name: z.string().min(2, "Enter your organization name").optional().or(z.literal("")),
   email: z.string().min(1, "Email is required").email("Enter a valid email"),
   password: z.string().min(8, "Use at least 8 characters"),
   role: z.enum(["hospital", "vendor"], { message: "Choose an account type" }),
+  tenant_name: z.string().min(2, "Enter your tenant name"),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -62,7 +63,7 @@ export default function Register() {
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: { role: "hospital" },
+    defaultValues: { role: "hospital", tenant_name: "" },
   });
 
   const role = watch("role");
@@ -70,7 +71,12 @@ export default function Register() {
   const onSubmit = async (values: FormValues) => {
     setServerError(null);
     try {
-      await registerUser(values);
+      const payload = {
+        ...values,
+        company_name: values.company_name || null,
+        tenant_name: values.tenant_name || values.company_name || values.full_name,
+      };
+      await registerUser(payload);
       toast.success("Account created");
       navigate("/dashboard", { replace: true });
     } catch (err) {
@@ -142,16 +148,24 @@ export default function Register() {
               label="Full name"
               icon={<User size={16} />}
               placeholder="Jordan Lee"
-              error={errors.name?.message}
-              {...register("name")}
+              error={errors.full_name?.message}
+              {...register("full_name")}
             />
 
             <Input
               label="Organization"
               icon={<Building2 size={16} />}
               placeholder="St. Mary's Hospital"
-              error={errors.organization?.message}
-              {...register("organization")}
+              error={errors.company_name?.message}
+              {...register("company_name")}
+            />
+
+            <Input
+              label="Tenant name"
+              icon={<Building2 size={16} />}
+              placeholder="Main Hospital Group"
+              error={errors.tenant_name?.message}
+              {...register("tenant_name")}
             />
 
             <Input

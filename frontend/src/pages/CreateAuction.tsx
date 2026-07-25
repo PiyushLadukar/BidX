@@ -15,11 +15,11 @@ import type { ApiError } from "../types";
 const schema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters"),
   description: z.string().min(10, "Add a more detailed description"),
-  category: z.string().optional(),
-  quantity: z.coerce.number().positive("Enter a valid quantity").optional(),
-  unit: z.string().optional(),
+  category: z.string().min(1, "Enter a category"),
+  quantity: z.coerce.number().positive("Enter a valid quantity"),
   starting_price: z.coerce.number().positive("Enter a starting price"),
-  closing_time: z.string().min(1, "Choose a closing date and time"),
+  start_time: z.string().min(1, "Choose a start date and time"),
+  end_time: z.string().min(1, "Choose an end date and time"),
 });
 
 type FormInput = z.input<typeof schema>;
@@ -42,7 +42,8 @@ export default function CreateAuction() {
     mutationFn: (values: FormValues) =>
       createAuction({
         ...values,
-        closing_time: new Date(values.closing_time).toISOString(),
+        start_time: new Date(values.start_time).toISOString(),
+        end_time: new Date(values.end_time).toISOString(),
       }),
     onSuccess: (auction) => {
       toast.success("Auction created");
@@ -129,21 +130,15 @@ export default function CreateAuction() {
                 {...register("category")}
               />
               <Input
-                label="Unit"
-                placeholder="e.g. box, unit"
-                error={errors.unit?.message}
-                {...register("unit")}
+                label="Quantity"
+                type="number"
+                min="1"
+                placeholder="10000"
+                error={errors.quantity?.message}
+                {...register("quantity")}
               />
             </div>
 
-            <Input
-              label="Quantity"
-              type="number"
-              min="1"
-              placeholder="10000"
-              error={errors.quantity?.message}
-              {...register("quantity")}
-            />
           </div>
         </Card>
 
@@ -171,10 +166,16 @@ export default function CreateAuction() {
               {...register("starting_price")}
             />
             <Input
-              label="Closing date & time"
+              label="Start date & time"
               type="datetime-local"
-              error={errors.closing_time?.message}
-              {...register("closing_time")}
+              error={errors.start_time?.message}
+              {...register("start_time")}
+            />
+            <Input
+              label="End date & time"
+              type="datetime-local"
+              error={errors.end_time?.message}
+              {...register("end_time")}
             />
           </div>
         </Card>

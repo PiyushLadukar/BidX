@@ -13,7 +13,7 @@ import type { AuctionStatus } from "../types";
 
 const filters: { label: string; value: AuctionStatus | "all" }[] = [
   { label: "All", value: "all" },
-  { label: "Active", value: "open" },
+  { label: "Active", value: "active" },
   { label: "Closed", value: "closed" },
   { label: "Pending", value: "pending" },
 ];
@@ -40,20 +40,20 @@ export default function Auctions() {
     const list = (auctions ?? []).filter((a) => {
       const matchesQuery =
         a.title.toLowerCase().includes(query.toLowerCase()) ||
-        a.description.toLowerCase().includes(query.toLowerCase());
-      const matchesStatus = status === "all" || a.status === status;
+        (a.description ?? "").toLowerCase().includes(query.toLowerCase());
+      const matchesStatus = status === "all" || a.status === status || (status === "active" && (a.status === "active" || a.status === "open"));
       return matchesQuery && matchesStatus;
     });
 
     const sorted = [...list].sort((a, b) => {
       if (sort === "newest") {
-        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        return new Date(b.created_at ?? 0).getTime() - new Date(a.created_at ?? 0).getTime();
       }
       if (sort === "closing") {
-        return new Date(a.closing_time).getTime() - new Date(b.closing_time).getTime();
+        return new Date(a.end_time ?? a.created_at ?? 0).getTime() - new Date(b.end_time ?? b.created_at ?? 0).getTime();
       }
-      const aLow = a.lowest_bid ?? a.starting_price;
-      const bLow = b.lowest_bid ?? b.starting_price;
+      const aLow = a.current_lowest_bid ?? a.starting_price;
+      const bLow = b.current_lowest_bid ?? b.starting_price;
       return aLow - bLow;
     });
 

@@ -78,16 +78,17 @@ export default function AuctionDetails() {
     );
   }
 
-  const countdown = getCountdown(auction.closing_time);
+  const countdown = getCountdown(auction.end_time ?? auction.start_time ?? auction.created_at ?? new Date().toISOString());
   const isHospital = user?.role === "hospital";
   const isVendor = user?.role === "vendor";
-  const canBid = isVendor && auction.status === "open" && !countdown.expired;
-  const canClose = isHospital && auction.status === "open";
+  const status = (auction.status ?? "active").toLowerCase();
+  const canBid = isVendor && (status === "active" || status === "open") && !countdown.expired;
+  const canClose = isHospital && (status === "active" || status === "open");
 
   const lowestBid =
     bids && bids.length > 0
-      ? Math.min(...bids.map((b) => b.amount))
-      : auction.lowest_bid ?? null;
+      ? Math.min(...bids.map((b) => b.bid_amount))
+      : auction.current_lowest_bid ?? null;
 
   const timeline = [
     {
@@ -105,15 +106,15 @@ export default function AuctionDetails() {
     {
       icon: auction.status === "closed" ? CheckCircle2 : Clock,
       label: auction.status === "closed" ? "Auction closed" : "Awaiting closure",
-      date: auction.status === "closed" ? auction.closing_time : undefined,
-      done: auction.status === "closed",
+      date: status === "closed" ? auction.end_time : undefined,
+      done: status === "closed",
     },
   ];
 
   const onPlaceBid = async (values: BidFormValues) => {
     if (!id) return;
     try {
-      await placeBid({ auction_id: id, amount: values.amount });
+      await placeBid({ auction_id: Number(id), bid_amount: values.amount });
       toast.success("Bid placed successfully");
       reset();
       setBidModalOpen(false);
@@ -162,8 +163,8 @@ export default function AuctionDetails() {
               <h1 className="text-xl font-semibold tracking-tight text-[#111827]">
                 {auction.title}
               </h1>
-              <Badge tone={statusTone(auction.status)}>
-                {AUCTION_STATUS_LABEL[auction.status] ?? auction.status}
+              <Badge tone={statusTone(status)}>
+                {AUCTION_STATUS_LABEL[status] ?? auction.status}
               </Badge>
             </div>
             <p className="max-w-2xl text-sm text-[#6B7280]">{auction.description}</p>
@@ -197,16 +198,16 @@ export default function AuctionDetails() {
           <div>
             <p className="text-xs text-[#6B7280]">Category</p>
             <p className="mt-1 text-base font-semibold text-[#111827]">
-              {auction.category ?? "—"}
+              {auction.category || "—"}
             </p>
           </div>
           <div>
             <p className="mb-1 flex items-center gap-1.5 text-xs text-[#6B7280]">
               <Clock size={12} />
-              {auction.status === "open" ? "Closes" : "Closed"}
+              {status === "active" || status === "open" ? "Closes" : "Closed"}
             </p>
             <p className="text-base font-semibold text-[#111827]">
-              {countdown.expired ? formatDate(auction.closing_time) : countdown.label}
+              {countdown.expired ? formatDate(auction.end_time ?? auction.start_time ?? auction.created_at ?? new Date().toISOString()) : countdown.label}
             </p>
           </div>
         </div>

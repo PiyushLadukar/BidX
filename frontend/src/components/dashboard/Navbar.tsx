@@ -37,10 +37,10 @@ export default function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
           className="focus-ring flex items-center gap-2 rounded-lg py-1 pl-1 pr-2 hover:bg-[#F8FAFC]"
         >
           <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#EEF4FF] text-xs font-semibold text-[#2563EB]">
-            {user ? initials(user.name) : "?"}
+            {user ? initials(user.full_name) : "?"}
           </span>
           <span className="hidden text-sm font-medium text-[#111827] sm:inline">
-            {user?.name ?? "Account"}
+            {user?.full_name ?? "Account"}
           </span>
         </Link>
       </div>

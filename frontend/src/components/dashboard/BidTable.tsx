@@ -13,8 +13,8 @@ export default function BidTable({ bids }: { bids: Bid[] }) {
     );
   }
 
-  const sorted = [...bids].sort((a, b) => a.amount - b.amount);
-  const lowestAmount = sorted[0]?.amount;
+  const sorted = [...bids].sort((a, b) => a.bid_amount - b.bid_amount);
+  const lowestAmount = sorted[0]?.bid_amount;
 
   return (
     <div className="card-shadow overflow-hidden rounded-2xl border border-[#E5E7EB] bg-white">
@@ -38,20 +38,20 @@ export default function BidTable({ bids }: { bids: Bid[] }) {
                     {initials(bid.vendor_name ?? "V")}
                   </span>
                   <span className="text-[#111827]">
-                    {bid.vendor_name ?? "Vendor"}
+                    {bid.vendor_name ?? `Vendor ${bid.vendor_id}`}
                   </span>
                 </div>
               </td>
               <td className="px-5 py-3.5">
                 <span
                   className={
-                    bid.amount === lowestAmount
+                    bid.bid_amount === lowestAmount
                       ? "inline-flex items-center gap-1.5 font-semibold text-[#16a34a]"
                       : "text-[#111827]"
                   }
                 >
-                  {bid.amount === lowestAmount && <Trophy size={13} />}
-                  {formatCurrency(bid.amount)}
+                  {bid.bid_amount === lowestAmount && <Trophy size={13} />}
+                  {formatCurrency(bid.bid_amount)}
                 </span>
               </td>
               <td className="px-5 py-3.5 text-[#6B7280]">

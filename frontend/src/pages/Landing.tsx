@@ -1,208 +1,123 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
   ArrowUpRight,
-  Sparkles,
+  Check,
   Gavel,
   Users,
   BarChart3,
-  ShieldAlert,
+  ShieldCheck,
   Lock,
   Radar,
-  ChevronDown,
-  Star,
-  Check,
-  TrendingDown,
   Building2,
+  Sparkles,
   Clock,
 } from "lucide-react";
 
+const GITHUB_URL = "https://github.com/PiyushLadukar";
+const LINKEDIN_URL = "https://www.linkedin.com/in/piyush-ladukar/";
+const AVATAR_URL = "https://github.com/PiyushLadukar.png?size=200";
+
+function GithubMark({ size = 18 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.1.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.7-3.88-1.54-3.88-1.54-.52-1.34-1.28-1.7-1.28-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.2 1.77 1.2 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.12 3.05.74.8 1.18 1.83 1.18 3.09 0 4.42-2.69 5.4-5.25 5.68.41.36.78 1.08.78 2.18 0 1.57-.01 2.84-.01 3.23 0 .32.21.68.8.56C20.71 21.39 24 17.08 24 12c0-6.35-5.15-11.5-12-11.5Z" />
+    </svg>
+  );
+}
+
+function LinkedinMark({ size = 18 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.61 0 4.28 2.38 4.28 5.47v6.27ZM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13ZM7.12 20.45H3.56V9h3.56v11.45Z" />
+    </svg>
+  );
+}
+
 const features = [
   {
-    icon: Sparkles,
-    title: "AI Procurement",
-    description:
-      "Every auction is continuously scored by AI models trained on real purchasing data.",
+    icon: Gavel,
+    title: "Reverse auctions",
+    description: "Vendors bid the price down, not up — every round moves in your favor.",
   },
   {
-    icon: Gavel,
-    title: "Reverse Auction Engine",
-    description:
-      "Vendors compete transparently, driving prices down in real time until the clock runs out.",
+    icon: Radar,
+    title: "Risk detection",
+    description: "Bids are checked against category norms before they ever reach you.",
   },
   {
     icon: Users,
-    title: "Vendor Management",
-    description:
-      "Verify, onboard, and track supplier performance from a single unified workspace.",
+    title: "Verified vendors",
+    description: "Every supplier is reviewed before they're allowed to place a bid.",
   },
   {
     icon: BarChart3,
-    title: "Real-Time Analytics",
-    description:
-      "Spend, savings, and vendor performance visualized the moment it happens — no refresh needed.",
-  },
-  {
-    icon: Radar,
-    title: "Risk Detection",
-    description:
-      "Anomalous pricing and suspicious bidding patterns are flagged before you commit to a vendor.",
+    title: "Live analytics",
+    description: "Spend and savings update the moment a bid lands, not at month end.",
   },
   {
     icon: Lock,
-    title: "Enterprise Security",
-    description:
-      "Role-based access, audit trails, and encrypted data handling built for regulated healthcare.",
+    title: "Access control",
+    description: "Role-based permissions and a full audit trail on every award.",
   },
-];
-
-const stats = [
-  { label: "Procurement spend managed", value: "$482M" },
-  { label: "Average cost reduction", value: "18.4%" },
-  { label: "Verified vendors", value: "3,200+" },
-  { label: "Auctions closed monthly", value: "1,150+" },
-];
-
-const workflow = [
   {
-    title: "Post the requirement",
-    description:
-      "Hospitals define the supply, specifications, budget, and closing deadline in minutes.",
     icon: Building2,
+    title: "Multi-facility",
+    description: "Run procurement across one hospital or an entire network from one place.",
+  },
+];
+
+const hospitalBenefits = [
+  "Post a requirement and set your own closing time",
+  "Watch vendors compete in real time on price",
+  "Get an AI risk read before you award anything",
+];
+
+const vendorBenefits = [
+  "See every open auction you're eligible to bid on",
+  "Track your bid position as competitors respond",
+  "Get notified the moment an auction closes",
+];
+
+const steps = [
+  {
+    icon: Building2,
+    title: "Post the requirement",
+    description: "Define the supply, budget ceiling, and closing time.",
   },
   {
-    title: "Vendors compete openly",
-    description:
-      "Verified vendors submit competitive bids, each one pushing the price lower.",
     icon: Gavel,
+    title: "Vendors compete",
+    description: "Verified suppliers bid openly until the clock runs out.",
   },
   {
-    title: "AI reviews every bid",
-    description:
-      "Risk models flag anomalies while analytics surface the strongest offer.",
-    icon: Radar,
+    icon: ShieldCheck,
+    title: "AI reviews the field",
+    description: "Anomalies get flagged before anything is awarded.",
   },
 ];
-
-const testimonials = [
-  {
-    quote:
-      "BidX cut our supply procurement cycle from three weeks to four days, and our finance team finally trusts the numbers.",
-    name: "Sarah Chen",
-    role: "VP Procurement, Riverside Health Network",
-  },
-  {
-    quote:
-      "The AI risk alerts caught a pricing anomaly our team would have missed. That single catch paid for the platform.",
-    name: "Marcus Devereux",
-    role: "Director of Supply Chain, Ashford Medical Group",
-  },
-  {
-    quote:
-      "Vendors actually enjoy bidding on BidX. The transparency keeps everyone honest and the process is refreshingly fast.",
-    name: "Priya Raman",
-    role: "Head of Vendor Relations, Solace Regional Hospitals",
-  },
-];
-
-const pricingTiers = [
-  {
-    name: "Starter",
-    price: "$0",
-    period: "for verified vendors",
-    description: "Everything a vendor needs to compete on active auctions.",
-    features: ["Unlimited bids", "Real-time auction alerts", "Bid history & analytics"],
-    cta: "Get started",
-    highlighted: false,
-  },
-  {
-    name: "Enterprise",
-    price: "Custom",
-    period: "per organization",
-    description: "For hospitals running high-volume procurement programs.",
-    features: [
-      "Unlimited auctions",
-      "AI risk detection suite",
-      "Dedicated vendor network",
-      "SSO & audit trails",
-      "Priority support",
-    ],
-    cta: "Talk to sales",
-    highlighted: true,
-  },
-  {
-    name: "Network",
-    price: "Custom",
-    period: "for hospital systems",
-    description: "Multi-facility procurement with consolidated reporting.",
-    features: ["Everything in Enterprise", "Cross-facility analytics", "Volume-based pricing"],
-    cta: "Talk to sales",
-    highlighted: false,
-  },
-];
-
-const faqs = [
-  {
-    q: "How does the reverse auction actually work?",
-    a: "A hospital posts a procurement need with a starting price and deadline. Verified vendors then submit bids below the current lowest price. When the auction closes, the hospital reviews the lowest qualifying bid alongside AI risk insights before awarding it.",
-  },
-  {
-    q: "How are vendors verified?",
-    a: "Every vendor completes an onboarding review covering licensing, past performance, and compliance documentation before they're permitted to bid on live auctions.",
-  },
-  {
-    q: "What does the AI risk engine actually flag?",
-    a: "It monitors bid velocity, pricing deviation from category norms, and vendor history to surface anomalies — like bids that are suspiciously low or patterns consistent with collusion.",
-  },
-  {
-    q: "Can BidX integrate with our existing procurement systems?",
-    a: "Yes. BidX exposes a documented API so your ERP or procurement software can sync auctions, vendors, and awarded bids automatically.",
-  },
-];
-
-function FaqItem({ q, a }: { q: string; a: string }) {
-  const [open, setOpen] = useState(false);
-  return (
-    <div className="border-b border-[#E5E7EB] py-5">
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        className="focus-ring flex w-full items-center justify-between gap-4 text-left"
-      >
-        <span className="text-base font-medium text-[#111827]">{q}</span>
-        <ChevronDown
-          size={18}
-          className={`shrink-0 text-[#6B7280] transition-transform ${open ? "rotate-180" : ""}`}
-        />
-      </button>
-      {open && <p className="mt-3 text-sm leading-relaxed text-[#6B7280]">{a}</p>}
-    </div>
-  );
-}
 
 export default function Landing() {
   return (
     <div className="min-h-screen bg-white text-[#111827]">
-      <header className="glass sticky top-0 z-40">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
-          <div className="flex items-center gap-2 font-semibold">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#2563EB] to-[#4F46E5] text-white">
+      <header className="sticky top-0 z-40 border-b border-[#E5E7EB] bg-white/95 backdrop-blur">
+        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
+          <Link to="/" className="flex items-center gap-2.5 font-semibold text-[#111827]">
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#2563EB] text-white">
               B
             </span>
             BidX
-          </div>
+          </Link>
           <nav className="hidden items-center gap-8 text-sm font-medium text-[#374151] lg:flex">
             <a href="#features" className="hover:text-[#111827]">Features</a>
-            <a href="#workflow" className="hover:text-[#111827]">Solutions</a>
-            <a href="#pricing" className="hover:text-[#111827]">Pricing</a>
-            <a href="#faq" className="hover:text-[#111827]">Resources</a>
+            <a href="#workflow" className="hover:text-[#111827]">How it works</a>
+            <a href="#ai" className="hover:text-[#111827]">AI engine</a>
           </nav>
           <div className="flex items-center gap-3">
             <Link
               to="/login"
-              className="focus-ring hidden rounded-xl px-4 py-2 text-sm font-medium text-[#374151] hover:text-[#111827] sm:inline-flex"
+              className="focus-ring hidden text-sm font-medium text-[#374151] hover:text-[#111827] sm:inline-flex"
             >
               Log in
             </Link>
@@ -211,98 +126,78 @@ export default function Landing() {
               className="focus-ring inline-flex items-center gap-1.5 rounded-xl bg-[#2563EB] px-4 py-2.5 text-sm font-medium text-white shadow-sm shadow-blue-600/20 transition-all hover:bg-[#1D4ED8] hover:shadow-md"
             >
               Get started
-              <ArrowRight size={15} />
             </Link>
           </div>
         </div>
       </header>
 
-      <section className="hero-grid relative overflow-hidden px-6 pb-28 pt-20 sm:pt-28">
-        <div className="mx-auto grid max-w-7xl items-center gap-14 lg:grid-cols-2">
-          <div>
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#E5E7EB] bg-white px-4 py-1.5 text-xs font-medium text-[#374151] shadow-sm"
-            >
+      {/* HERO */}
+      <section className="relative overflow-hidden px-6 pb-20 pt-20 sm:pt-28">
+        <div
+          className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[560px] bg-gradient-to-b from-[#EEF4FF] to-white"
+          aria-hidden="true"
+        />
+        <div className="mx-auto grid max-w-6xl gap-16 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+          <motion.div
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#E5E7EB] bg-white px-4 py-1.5 text-xs font-medium text-[#374151] shadow-sm">
               <Sparkles size={13} className="text-[#2563EB]" />
               AI-powered reverse procurement
-            </motion.div>
-            <motion.h1
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.05 }}
-              className="text-5xl font-semibold tracking-tight text-[#111827] sm:text-6xl"
-            >
-              Bids But Better.
-            </motion.h1>
-            <motion.p
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="mt-6 max-w-lg text-lg leading-relaxed text-[#6B7280]"
-            >
-              BidX turns hospital procurement into a transparent, real-time
-              market. Vendors compete on price, AI watches every bid for
-              risk, and your team awards with confidence.
-            </motion.p>
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.15 }}
-              className="mt-9 flex flex-wrap items-center gap-3"
-            >
+            </div>
+            <h1 className="text-5xl font-semibold leading-[1.1] tracking-tight text-[#111827] sm:text-6xl">
+              Bids, but better.
+            </h1>
+            <p className="mt-6 max-w-md text-lg leading-relaxed text-[#6B7280]">
+              Hospitals post what they need. Verified vendors compete on
+              price. AI reviews every bid for risk before you commit to a
+              purchase.
+            </p>
+            <div className="mt-9 flex flex-wrap items-center gap-3">
               <Link
                 to="/register"
                 className="focus-ring inline-flex items-center gap-2 rounded-xl bg-[#2563EB] px-6 py-3.5 text-sm font-semibold text-white shadow-sm shadow-blue-600/25 transition-all hover:bg-[#1D4ED8] hover:shadow-md"
               >
-                Start procuring smarter
+                Start an auction
                 <ArrowRight size={16} />
               </Link>
               <Link
                 to="/login"
                 className="focus-ring inline-flex items-center gap-2 rounded-xl border border-[#E5E7EB] bg-white px-6 py-3.5 text-sm font-semibold text-[#111827] shadow-sm hover:bg-[#F8FAFC]"
               >
-                View live dashboard
+                Log in
               </Link>
-            </motion.div>
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.25 }}
-              className="mt-8 text-xs font-medium uppercase tracking-wide text-[#9CA3AF]"
-            >
-              Trusted by procurement teams at hospital networks nationwide
-            </motion.p>
-          </div>
+            </div>
+          </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.15 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
             className="relative"
           >
-            <div className="card-shadow rounded-3xl border border-[#E5E7EB] bg-white p-6">
+            <div className="rounded-2xl border border-[#E5E7EB] bg-white p-6 shadow-[0_1px_2px_rgba(17,24,39,0.04),0_24px_48px_-28px_rgba(17,24,39,0.18)]">
               <div className="mb-5 flex items-center justify-between">
                 <p className="text-sm font-semibold text-[#111827]">
                   Surgical gloves — bulk order
                 </p>
                 <span className="rounded-full bg-[#22C55E]/10 px-2.5 py-1 text-xs font-medium text-[#16a34a]">
-                  Active
+                  Open
                 </span>
               </div>
               <div className="mb-5 grid grid-cols-2 gap-3">
-                <div className="rounded-xl bg-[#FAFAFA] p-3.5">
+                <div className="rounded-xl bg-[#FAFAFA] p-4">
                   <p className="text-xs text-[#6B7280]">Lowest bid</p>
-                  <p className="mt-1 text-lg font-semibold text-[#16a34a]">$4,120</p>
+                  <p className="mt-1 text-2xl font-semibold text-[#16a34a]">$4,120</p>
                 </div>
-                <div className="rounded-xl bg-[#FAFAFA] p-3.5">
-                  <p className="text-xs text-[#6B7280]">Closes in</p>
-                  <p className="mt-1 text-lg font-semibold text-[#111827]">02:14:09</p>
+                <div className="rounded-xl bg-[#FAFAFA] p-4">
+                  <p className="text-xs text-[#6B7280]">Vendors competing</p>
+                  <p className="mt-1 text-2xl font-semibold text-[#111827]">4</p>
                 </div>
               </div>
-              <div className="space-y-2.5">
+              <div className="space-y-2">
                 {[
                   { name: "MedSupply Co.", amount: "$4,120" },
                   { name: "Vantage Health", amount: "$4,340" },
@@ -310,7 +205,7 @@ export default function Landing() {
                 ].map((bid) => (
                   <div
                     key={bid.name}
-                    className="flex items-center justify-between rounded-xl border border-[#E5E7EB] px-3.5 py-2.5 text-sm"
+                    className="flex items-center justify-between rounded-xl border border-[#E5E7EB] px-4 py-2.5 text-sm"
                   >
                     <span className="text-[#374151]">{bid.name}</span>
                     <span className="font-medium text-[#111827]">{bid.amount}</span>
@@ -320,74 +215,125 @@ export default function Landing() {
             </div>
 
             <motion.div
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              className="card-shadow absolute -left-8 -top-6 hidden w-44 rounded-2xl border border-[#E5E7EB] bg-white/95 p-4 backdrop-blur sm:block"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.35 }}
+              className="absolute -left-6 -top-6 hidden items-center gap-3 rounded-2xl border border-[#E5E7EB] bg-white px-4 py-3 shadow-lg shadow-black/5 sm:flex"
             >
-              <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-[#22C55E]/10 text-[#16a34a]">
-                <TrendingDown size={15} />
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#2563EB]/10 text-[#2563EB]">
+                <ShieldCheck size={17} />
               </div>
-              <p className="text-xs text-[#6B7280]">Cost saved this month</p>
-              <p className="text-lg font-semibold text-[#111827]">$1.2M</p>
+              <div>
+                <p className="text-xs text-[#6B7280]">Every bid</p>
+                <p className="text-sm font-semibold text-[#111827]">AI reviewed</p>
+              </div>
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, x: 10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-              className="card-shadow absolute -bottom-6 -right-6 hidden w-44 rounded-2xl border border-[#E5E7EB] bg-white/95 p-4 backdrop-blur sm:block"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.45 }}
+              className="absolute -bottom-6 -right-4 hidden items-center gap-3 rounded-2xl border border-[#E5E7EB] bg-white px-4 py-3 shadow-lg shadow-black/5 sm:flex"
             >
-              <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-[#2563EB]/10 text-[#2563EB]">
-                <ShieldAlert size={15} />
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#F59E0B]/10 text-[#b45309]">
+                <Clock size={17} />
               </div>
-              <p className="text-xs text-[#6B7280]">Risk signals this week</p>
-              <p className="text-lg font-semibold text-[#111827]">3 flagged</p>
+              <div>
+                <p className="text-xs text-[#6B7280]">Closes</p>
+                <p className="text-sm font-semibold text-[#111827]">In 2h 14m</p>
+              </div>
             </motion.div>
           </motion.div>
         </div>
       </section>
 
-      <section className="border-y border-[#E5E7EB] bg-[#FAFAFA] px-6 py-14">
-        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-8 lg:grid-cols-4">
-          {stats.map((s) => (
-            <div key={s.label} className="text-center lg:text-left">
-              <p className="text-3xl font-semibold tracking-tight text-[#111827]">
-                {s.value}
-              </p>
-              <p className="mt-1 text-sm text-[#6B7280]">{s.label}</p>
-            </div>
-          ))}
+      {/* FEATURES */}
+      <section id="features" className="border-t border-[#E5E7EB] bg-[#FAFAFA]">
+        <div className="mx-auto max-w-6xl px-6 py-20">
+          <div className="mx-auto mb-14 max-w-2xl text-center">
+            <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-[#2563EB]">
+              Platform
+            </p>
+            <h2 className="text-3xl font-semibold tracking-tight text-[#111827] sm:text-4xl">
+              Everything procurement teams need
+            </h2>
+          </div>
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {features.map(({ icon: Icon, title, description }, i) => (
+              <motion.div
+                key={title}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: i * 0.05 }}
+                className="rounded-2xl border border-[#E5E7EB] bg-white p-6 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/[0.06]"
+              >
+                <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-[#EEF4FF] text-[#2563EB]">
+                  <Icon size={20} />
+                </div>
+                <h3 className="mb-1.5 text-base font-semibold text-[#111827]">{title}</h3>
+                <p className="text-sm leading-relaxed text-[#6B7280]">{description}</p>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 
-      <section id="features" className="mx-auto max-w-7xl px-6 py-24">
-        <div className="mx-auto mb-14 max-w-2xl text-center">
-          <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-[#2563EB]">
-            Platform
-          </p>
-          <h2 className="text-3xl font-semibold tracking-tight text-[#111827] sm:text-4xl">
-            Everything procurement teams need, built in
-          </h2>
-        </div>
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {features.map(({ icon: Icon, title, description }) => (
-            <div
-              key={title}
-              className="card-shadow rounded-2xl border border-[#E5E7EB] bg-white p-6 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/[0.06]"
-            >
-              <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-[#EEF4FF] text-[#2563EB]">
-                <Icon size={20} />
+      {/* WHO IT'S FOR */}
+      <section className="border-t border-[#E5E7EB]">
+        <div className="mx-auto max-w-6xl px-6 py-20">
+          <div className="mx-auto mb-14 max-w-2xl text-center">
+            <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-[#2563EB]">
+              Built for both sides
+            </p>
+            <h2 className="text-3xl font-semibold tracking-tight text-[#111827] sm:text-4xl">
+              Whichever side of the auction you're on
+            </h2>
+          </div>
+          <div className="grid gap-6 lg:grid-cols-2">
+            <div className="rounded-2xl border border-[#E5E7EB] bg-white p-8">
+              <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-xl bg-[#EEF4FF] text-[#2563EB]">
+                <Building2 size={20} />
               </div>
-              <h3 className="mb-1.5 text-base font-semibold text-[#111827]">{title}</h3>
-              <p className="text-sm leading-relaxed text-[#6B7280]">{description}</p>
+              <h3 className="mb-2 text-lg font-semibold text-[#111827]">For hospitals</h3>
+              <p className="mb-5 text-sm text-[#6B7280]">
+                Turn procurement into a competitive market, without the back
+                and forth.
+              </p>
+              <ul className="space-y-3">
+                {hospitalBenefits.map((b) => (
+                  <li key={b} className="flex items-start gap-2.5 text-sm text-[#374151]">
+                    <Check size={15} className="mt-0.5 shrink-0 text-[#16a34a]" />
+                    {b}
+                  </li>
+                ))}
+              </ul>
             </div>
-          ))}
+            <div className="rounded-2xl border border-[#E5E7EB] bg-white p-8">
+              <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-xl bg-[#EEF4FF] text-[#2563EB]">
+                <Gavel size={20} />
+              </div>
+              <h3 className="mb-2 text-lg font-semibold text-[#111827]">For vendors</h3>
+              <p className="mb-5 text-sm text-[#6B7280]">
+                Get transparent access to procurement opportunities you
+                actually qualify for.
+              </p>
+              <ul className="space-y-3">
+                {vendorBenefits.map((b) => (
+                  <li key={b} className="flex items-start gap-2.5 text-sm text-[#374151]">
+                    <Check size={15} className="mt-0.5 shrink-0 text-[#16a34a]" />
+                    {b}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
         </div>
       </section>
 
-      <section id="workflow" className="bg-[#FAFAFA] px-6 py-24">
-        <div className="mx-auto max-w-7xl">
+      {/* WORKFLOW */}
+      <section id="workflow" className="border-t border-[#E5E7EB] bg-[#FAFAFA]">
+        <div className="mx-auto max-w-6xl px-6 py-20">
           <div className="mx-auto mb-14 max-w-2xl text-center">
             <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-[#2563EB]">
               How it works
@@ -396,10 +342,17 @@ export default function Landing() {
               From requirement to award in three steps
             </h2>
           </div>
-          <div className="grid gap-8 sm:grid-cols-3">
-            {workflow.map(({ icon: Icon, title, description }, i) => (
-              <div key={title} className="relative rounded-2xl bg-white p-6 card-shadow border border-[#E5E7EB]">
-                <div className="mb-4 flex items-center justify-between">
+          <div className="grid gap-6 sm:grid-cols-3">
+            {steps.map(({ icon: Icon, title, description }, i) => (
+              <motion.div
+                key={title}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: i * 0.08 }}
+                className="rounded-2xl border border-[#E5E7EB] bg-white p-7 shadow-sm"
+              >
+                <div className="mb-5 flex items-center justify-between">
                   <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#2563EB]/10 text-[#2563EB]">
                     <Icon size={20} />
                   </div>
@@ -409,231 +362,167 @@ export default function Landing() {
                 </div>
                 <h3 className="mb-1.5 text-base font-semibold text-[#111827]">{title}</h3>
                 <p className="text-sm leading-relaxed text-[#6B7280]">{description}</p>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 py-24">
-        <div className="grid items-center gap-14 lg:grid-cols-2">
-          <div>
-            <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-[#2563EB]">
-              AI Insights
-            </p>
-            <h2 className="mb-5 text-3xl font-semibold tracking-tight text-[#111827] sm:text-4xl">
-              An AI layer watching every bid, not just the lowest one
-            </h2>
-            <p className="mb-7 text-base leading-relaxed text-[#6B7280]">
-              BidX continuously models pricing behavior across your auctions.
-              It flags anomalies, surfaces vendor risk, and gives your team a
-              clear recommendation before you commit to a purchase.
-            </p>
-            <div className="space-y-4">
-              {[
-                "Real-time anomaly detection on every incoming bid",
-                "Vendor risk scoring based on historical performance",
-                "Confidence-rated recommendations, not just raw numbers",
-              ].map((item) => (
-                <div key={item} className="flex items-start gap-3">
-                  <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#22C55E]/10 text-[#16a34a]">
-                    <Check size={12} />
-                  </div>
-                  <p className="text-sm text-[#374151]">{item}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="card-shadow rounded-3xl border border-[#E5E7EB] bg-white p-6">
-            <div className="mb-4 flex items-center gap-2">
-              <ShieldAlert size={16} className="text-[#dc2626]" />
-              <p className="text-sm font-semibold text-[#111827]">Risk alert</p>
-              <span className="ml-auto rounded-full bg-[#EF4444]/10 px-2.5 py-1 text-xs font-medium text-[#dc2626]">
-                High
-              </span>
-            </div>
-            <p className="mb-4 text-sm text-[#6B7280]">
-              Bid from CorePharm Ltd. is 34% below category average — flagged
-              for manual review before award.
-            </p>
-            <div className="flex items-center justify-between border-t border-[#E5E7EB] pt-4 text-xs text-[#6B7280]">
-              <span className="inline-flex items-center gap-1.5">
-                <Clock size={12} />2 minutes ago
-              </span>
-              <span className="font-medium text-[#2563EB]">Confidence: 91%</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-[#FAFAFA] px-6 py-24">
-        <div className="mx-auto max-w-7xl">
-          <div className="mx-auto mb-14 max-w-2xl text-center">
-            <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-[#2563EB]">
-              Testimonials
-            </p>
-            <h2 className="text-3xl font-semibold tracking-tight text-[#111827] sm:text-4xl">
-              Procurement teams trust BidX
-            </h2>
-          </div>
-          <div className="grid gap-5 sm:grid-cols-3">
-            {testimonials.map((t) => (
-              <div key={t.name} className="card-shadow rounded-2xl border border-[#E5E7EB] bg-white p-6">
-                <div className="mb-3 flex gap-0.5 text-[#F59E0B]">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Star key={i} size={14} fill="currentColor" strokeWidth={0} />
-                  ))}
-                </div>
-                <p className="mb-5 text-sm leading-relaxed text-[#374151]">
-                  "{t.quote}"
-                </p>
-                <p className="text-sm font-semibold text-[#111827]">{t.name}</p>
-                <p className="text-xs text-[#6B7280]">{t.role}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section id="pricing" className="mx-auto max-w-7xl px-6 py-24">
-        <div className="mx-auto mb-14 max-w-2xl text-center">
-          <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-[#2563EB]">
-            Pricing
-          </p>
-          <h2 className="text-3xl font-semibold tracking-tight text-[#111827] sm:text-4xl">
-            Simple pricing for hospitals and vendors
-          </h2>
-        </div>
-        <div className="grid gap-6 lg:grid-cols-3">
-          {pricingTiers.map((tier) => (
-            <div
-              key={tier.name}
-              className={`rounded-2xl border p-7 ${
-                tier.highlighted
-                  ? "card-shadow relative border-[#2563EB] bg-white ring-1 ring-[#2563EB]"
-                  : "card-shadow border-[#E5E7EB] bg-white"
-              }`}
+      {/* AI SECTION */}
+      <section id="ai" className="border-t border-[#E5E7EB]">
+        <div className="mx-auto max-w-6xl px-6 py-20">
+          <div className="grid items-center gap-14 lg:grid-cols-2">
+            <motion.div
+              initial={{ opacity: 0, x: -16 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
             >
-              {tier.highlighted && (
-                <span className="absolute -top-3 left-7 rounded-full bg-[#2563EB] px-3 py-1 text-xs font-semibold text-white">
-                  Most popular
-                </span>
-              )}
-              <h3 className="mb-1 text-lg font-semibold text-[#111827]">{tier.name}</h3>
-              <p className="mb-4 text-sm text-[#6B7280]">{tier.description}</p>
-              <div className="mb-6 flex items-baseline gap-1.5">
-                <span className="text-3xl font-semibold tracking-tight text-[#111827]">
-                  {tier.price}
-                </span>
-                <span className="text-sm text-[#6B7280]">{tier.period}</span>
+              <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-[#2563EB]">
+                AI insights
+              </p>
+              <h2 className="mb-5 text-3xl font-semibold tracking-tight text-[#111827] sm:text-4xl">
+                Watching every bid, not just the lowest one
+              </h2>
+              <p className="mb-7 text-base leading-relaxed text-[#6B7280]">
+                Each bid is scored against category pricing history the
+                moment it lands. If something looks off — a price that's too
+                good, a pattern that repeats — it's flagged before an award
+                is made, not after.
+              </p>
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { icon: Radar, label: "Anomaly detection" },
+                  { icon: ShieldCheck, label: "Vendor risk scoring" },
+                  { icon: BarChart3, label: "Live analytics" },
+                  { icon: Lock, label: "Full audit trail" },
+                ].map(({ icon: Icon, label }) => (
+                  <div
+                    key={label}
+                    className="flex items-center gap-3 rounded-xl border border-[#E5E7EB] bg-white p-3.5 shadow-sm"
+                  >
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#EEF4FF] text-[#2563EB]">
+                      <Icon size={15} />
+                    </div>
+                    <p className="text-sm font-medium text-[#111827]">{label}</p>
+                  </div>
+                ))}
               </div>
-              <ul className="mb-7 space-y-2.5">
-                {tier.features.map((f) => (
-                  <li key={f} className="flex items-center gap-2.5 text-sm text-[#374151]">
-                    <Check size={14} className="text-[#16a34a]" />
-                    {f}
-                  </li>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 16 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="rounded-2xl border border-[#E5E7EB] bg-[#FAFAFA] p-7"
+            >
+              <p className="mb-5 text-xs font-semibold uppercase tracking-wide text-[#6B7280]">
+                How a bid gets checked
+              </p>
+              <div className="space-y-3">
+                {[
+                  { label: "Bid received", detail: "Vendor submits a price", tone: "neutral" },
+                  { label: "Risk model scores it", detail: "Checked against category history", tone: "primary" },
+                  { label: "Cleared or flagged", detail: "You see the verdict instantly", tone: "success" },
+                ].map((row, i) => (
+                  <div key={row.label} className="flex items-center gap-4">
+                    <div className="flex flex-col items-center">
+                      <div
+                        className={`flex h-9 w-9 items-center justify-center rounded-full text-xs font-semibold ${
+                          row.tone === "primary"
+                            ? "bg-[#2563EB] text-white"
+                            : row.tone === "success"
+                              ? "bg-[#22C55E]/10 text-[#16a34a]"
+                              : "bg-white border border-[#E5E7EB] text-[#6B7280]"
+                        }`}
+                      >
+                        {i + 1}
+                      </div>
+                      {i < 2 && <div className="h-6 w-px bg-[#E5E7EB]" />}
+                    </div>
+                    <div className="flex-1 rounded-xl border border-[#E5E7EB] bg-white px-4 py-3">
+                      <p className="text-sm font-semibold text-[#111827]">{row.label}</p>
+                      <p className="text-xs text-[#6B7280]">{row.detail}</p>
+                    </div>
+                  </div>
                 ))}
-              </ul>
-              <Link
-                to="/register"
-                className={`focus-ring flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition-all ${
-                  tier.highlighted
-                    ? "bg-[#2563EB] text-white shadow-sm shadow-blue-600/25 hover:bg-[#1D4ED8]"
-                    : "border border-[#E5E7EB] text-[#111827] hover:bg-[#F8FAFC]"
-                }`}
-              >
-                {tier.cta}
-                <ArrowUpRight size={15} />
-              </Link>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section id="faq" className="bg-[#FAFAFA] px-6 py-24">
-        <div className="mx-auto max-w-3xl">
-          <div className="mb-12 text-center">
-            <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-[#2563EB]">
-              FAQ
-            </p>
-            <h2 className="text-3xl font-semibold tracking-tight text-[#111827] sm:text-4xl">
-              Frequently asked questions
-            </h2>
-          </div>
-          <div>
-            {faqs.map((f) => (
-              <FaqItem key={f.q} q={f.q} a={f.a} />
-            ))}
+              </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
-      <section className="mx-auto max-w-5xl px-6 py-24 text-center">
-        <div className="card-shadow rounded-3xl border border-[#E5E7EB] bg-gradient-to-br from-[#2563EB] to-[#4F46E5] p-12 text-white">
-          <h2 className="mb-3 text-3xl font-semibold tracking-tight sm:text-4xl">
-            Ready to run your first auction?
-          </h2>
-          <p className="mx-auto mb-8 max-w-md text-sm text-white/80">
-            Set up your organization in minutes and invite vendors to start
-            competing on price today.
-          </p>
-          <Link
-            to="/register"
-            className="focus-ring inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3.5 text-sm font-semibold text-[#2563EB] shadow-lg transition-all hover:bg-[#F8FAFC]"
+      {/* BUILDER */}
+      <section className="border-t border-[#E5E7EB] bg-[#FAFAFA]">
+        <div className="mx-auto max-w-6xl px-6 py-16">
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4 }}
+            className="mx-auto flex max-w-xl flex-col items-center gap-5 rounded-2xl border border-[#E5E7EB] bg-white p-8 text-center shadow-sm sm:flex-row sm:text-left"
           >
-            Create your account
-            <ArrowRight size={16} />
-          </Link>
+            <img
+              src={AVATAR_URL}
+              alt="Piyush Ladukar"
+              width={72}
+              height={72}
+              className="h-[72px] w-[72px] shrink-0 rounded-full border border-[#E5E7EB] object-cover"
+            />
+            <div className="flex-1">
+              <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-[#9CA3AF]">
+                Built by
+              </p>
+              <p className="text-lg font-semibold text-[#111827]">Piyush Ladukar</p>
+              <p className="text-sm text-[#6B7280]">Designed and built this end to end.</p>
+            </div>
+            <div className="flex shrink-0 gap-2">
+              <a
+                href={GITHUB_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="GitHub profile"
+                className="focus-ring flex h-10 w-10 items-center justify-center rounded-full border border-[#E5E7EB] text-[#374151] transition-colors hover:border-[#111827] hover:text-[#111827]"
+              >
+                <GithubMark size={18} />
+              </a>
+              <a
+                href={LINKEDIN_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn profile"
+                className="focus-ring flex h-10 w-10 items-center justify-center rounded-full border border-[#E5E7EB] text-[#374151] transition-colors hover:border-[#2563EB] hover:text-[#2563EB]"
+              >
+                <LinkedinMark size={18} />
+              </a>
+            </div>
+          </motion.div>
         </div>
       </section>
 
-      <footer className="border-t border-[#E5E7EB] px-6 py-14">
-        <div className="mx-auto grid max-w-7xl gap-10 sm:grid-cols-2 lg:grid-cols-5">
-          <div className="lg:col-span-2">
-            <div className="mb-3 flex items-center gap-2 font-semibold text-[#111827]">
-              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#2563EB] to-[#4F46E5] text-white">
-                B
-              </span>
-              BidX
+      {/* FINAL CTA */}
+      <section className="border-t border-[#E5E7EB]">
+        <div className="mx-auto max-w-6xl px-6 py-20">
+          <div className="flex flex-col items-center justify-between gap-8 rounded-2xl bg-gradient-to-br from-[#2563EB] to-[#4F46E5] px-8 py-12 text-center shadow-xl shadow-blue-600/20 sm:flex-row sm:text-left">
+            <div>
+              <h2 className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">
+                Ready to run your first auction?
+              </h2>
+              <p className="mt-2 text-sm text-white/80">
+                Set up your organization and invite vendors in minutes.
+              </p>
             </div>
-            <p className="max-w-xs text-sm text-[#6B7280]">
-              AI-powered reverse procurement for hospitals and their verified
-              vendor networks.
-            </p>
+            <Link
+              to="/register"
+              className="focus-ring inline-flex shrink-0 items-center gap-2 rounded-xl bg-white px-6 py-3.5 text-sm font-semibold text-[#2563EB] shadow-lg transition-all hover:-translate-y-0.5 hover:bg-[#F8FAFC]"
+            >
+              Create your account
+              <ArrowUpRight size={16} />
+            </Link>
           </div>
-          {[
-            {
-              title: "Product",
-              links: ["Features", "Solutions", "Pricing", "Security"],
-            },
-            {
-              title: "Company",
-              links: ["About", "Careers", "Blog", "Contact"],
-            },
-            {
-              title: "Resources",
-              links: ["Documentation", "API reference", "Support", "Status"],
-            },
-          ].map((col) => (
-            <div key={col.title}>
-              <p className="mb-3 text-sm font-semibold text-[#111827]">{col.title}</p>
-              <ul className="space-y-2.5">
-                {col.links.map((link) => (
-                  <li key={link}>
-                    <a href="#" className="text-sm text-[#6B7280] hover:text-[#111827]">
-                      {link}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
         </div>
-        <div className="mx-auto mt-12 max-w-7xl border-t border-[#E5E7EB] pt-6 text-xs text-[#9CA3AF]">
-          © {new Date().getFullYear()} BidX, Inc. All rights reserved.
-        </div>
-      </footer>
+      </section>
     </div>
   );
 }

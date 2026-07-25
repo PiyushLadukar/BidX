@@ -2,7 +2,7 @@ import api from "./axios";
 import type { Bid, CreateBidPayload } from "../types";
 
 export async function placeBid(payload: CreateBidPayload): Promise<Bid> {
-  const { data } = await api.post<Bid>("/bids", payload);
+  const { data } = await api.post<Bid>("/bids/", payload);
   return data;
 }
 

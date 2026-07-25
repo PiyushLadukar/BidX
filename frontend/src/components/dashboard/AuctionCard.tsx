@@ -6,7 +6,7 @@ import { AUCTION_STATUS_LABEL } from "../../utils/constants";
 import type { Auction } from "../../types";
 
 export default function AuctionCard({ auction }: { auction: Auction }) {
-  const countdown = getCountdown(auction.closing_time);
+  const countdown = getCountdown(auction.end_time ?? auction.start_time ?? auction.created_at ?? new Date().toISOString());
 
   return (
     <Link
@@ -43,7 +43,7 @@ export default function AuctionCard({ auction }: { auction: Auction }) {
         <div>
           <p className="text-xs text-[#6B7280]">Lowest bid</p>
           <p className="text-sm font-semibold text-[#16a34a]">
-            {formatCurrency(auction.lowest_bid ?? auction.starting_price)}
+            {formatCurrency(auction.current_lowest_bid ?? auction.starting_price)}
           </p>
         </div>
         <div className="flex items-center gap-3">

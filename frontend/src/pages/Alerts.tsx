@@ -34,7 +34,7 @@ export default function Alerts() {
   const filtered = useMemo(() => {
     return (alerts ?? []).filter((a) => {
       const matchesQuery =
-        a.title.toLowerCase().includes(query.toLowerCase()) ||
+        (a.title ?? a.alert_type ?? "").toLowerCase().includes(query.toLowerCase()) ||
         a.description.toLowerCase().includes(query.toLowerCase());
       const matchesSeverity = severity === "all" || a.severity === severity;
       return matchesQuery && matchesSeverity;
@@ -116,9 +116,9 @@ export default function Alerts() {
               </div>
               <p className="mb-4 text-sm text-[#6B7280]">{alert.description}</p>
               <div className="flex items-center justify-between border-t border-[#E5E7EB] pt-3.5 text-xs text-[#6B7280]">
-                {alert.risk_score !== undefined && (
+                {false && (
                   <span className="font-medium text-[#2563EB]">
-                    Confidence: {alert.risk_score}%
+                    Confidence: 0%
                   </span>
                 )}
                 <span>{formatDate(alert.created_at)}</span>

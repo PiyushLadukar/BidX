@@ -13,7 +13,7 @@ export default function AIInsights({
   variant = "dashboard",
 }: AIInsightsProps) {
   const highRiskCount =
-    alerts?.filter((a) => a.severity === "high" || a.severity === "critical")
+    alerts?.filter((a) => (a.severity ?? "").toLowerCase() === "high" || (a.severity ?? "").toLowerCase() === "critical")
       .length ?? 0;
 
   if (variant === "auction") {

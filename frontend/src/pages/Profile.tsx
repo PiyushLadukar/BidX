@@ -42,7 +42,7 @@ export default function Profile() {
         <div className="flex items-center gap-4">
           <div className="relative">
             <span className="flex h-16 w-16 items-center justify-center rounded-full bg-[#EEF4FF] text-lg font-semibold text-[#2563EB]">
-              {initials(user.name)}
+              {initials(user.full_name)}
             </span>
             <button
               type="button"
@@ -53,7 +53,7 @@ export default function Profile() {
             </button>
           </div>
           <div>
-            <p className="text-base font-semibold text-[#111827]">{user.name}</p>
+            <p className="text-base font-semibold text-[#111827]">{user.full_name}</p>
             <p className="text-sm capitalize text-[#6B7280]">{user.role} account</p>
           </div>
         </div>
@@ -69,14 +69,14 @@ export default function Profile() {
             </div>
           </div>
 
-          {user.organization && (
+          {user.company_name && (
             <div className="flex items-center gap-3">
               <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#F3F4F6] text-[#6B7280]">
                 <Building2 size={16} />
               </div>
               <div>
                 <p className="text-xs text-[#6B7280]">Organization</p>
-                <p className="text-sm font-medium text-[#111827]">{user.organization}</p>
+                <p className="text-sm font-medium text-[#111827]">{user.company_name}</p>
               </div>
             </div>
           )}

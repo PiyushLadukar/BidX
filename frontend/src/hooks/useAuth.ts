@@ -56,20 +56,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const login = useCallback(async (payload: LoginPayload) => {
-    const res = await loginRequest(payload);
-    localStorage.setItem(TOKEN_KEY, res.access_token);
-    const me = res.user ?? (await getMe());
+    const tokenResponse = await loginRequest(payload);
+    localStorage.setItem(TOKEN_KEY, tokenResponse.access_token);
+
+    const me = await getMe();
     setUser(me);
     localStorage.setItem(USER_KEY, JSON.stringify(me));
     return me;
   }, []);
 
   const register = useCallback(async (payload: RegisterPayload) => {
-    const res = await registerRequest(payload);
-    localStorage.setItem(TOKEN_KEY, res.access_token);
-    const me = res.user ?? (await getMe());
-    setUser(me);
-    localStorage.setItem(USER_KEY, JSON.stringify(me));
+    await registerRequest(payload);
+    const me = await login({ email: payload.email, password: payload.password });
     return me;
   }, []);
 
@@ -77,7 +75,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
     setUser(null);
-    window.location.href = "/login";
+    window.location.assign("/login");
   }, []);
 
   const value = useMemo<AuthContextValue>(
