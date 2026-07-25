@@ -24,14 +24,16 @@ export default function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
       </div>
 
       <div className="flex items-center gap-3">
-        <Link
-          to="/alerts"
-          aria-label="View alerts"
-          className="focus-ring relative flex h-9 w-9 items-center justify-center rounded-lg text-[#6B7280] transition-colors hover:bg-[#F8FAFC] hover:text-[#111827]"
-        >
-          <Bell size={18} />
-          <span className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-[#EF4444]" />
-        </Link>
+        {user?.role === "hospital" && (
+          <Link
+            to="/alerts"
+            aria-label="View alerts"
+            className="focus-ring relative flex h-9 w-9 items-center justify-center rounded-lg text-[#6B7280] transition-colors hover:bg-[#F8FAFC] hover:text-[#111827]"
+          >
+            <Bell size={18} />
+            <span className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-[#EF4444]" />
+          </Link>
+        )}
         <Link
           to="/profile"
           className="focus-ring flex items-center gap-2 rounded-lg py-1 pl-1 pr-2 hover:bg-[#F8FAFC]"

@@ -274,7 +274,7 @@ export default function AuctionDetails() {
             . Submit a lower amount to take the lead.
           </p>
           <Input
-            label="Your bid amount (USD)"
+            label="Your bid amount (INR)"
             type="number"
             step="0.01"
             min="0"

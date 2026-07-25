@@ -9,6 +9,7 @@ import {
   X,
 } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
+import Logo from "../common/Logo";
 import { cn, initials } from "../../utils/helpers";
 
 interface SidebarProps {
@@ -19,7 +20,13 @@ interface SidebarProps {
 const navItems = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/auctions", label: "Auctions", icon: Gavel },
-  { to: "/alerts", label: "AI Alerts", icon: ShieldAlert },
+  { to: "/alerts", label: "Signals", icon: ShieldAlert },
+  { to: "/profile", label: "Profile", icon: User },
+];
+
+const vendorNavItems = [
+  { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { to: "/auctions", label: "Opportunities", icon: Gavel },
   { to: "/profile", label: "Profile", icon: User },
 ];
 
@@ -42,12 +49,7 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
         )}
       >
         <div className="flex h-16 items-center justify-between px-5">
-          <div className="flex items-center gap-2 font-semibold text-[#111827]">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#2563EB] to-[#4F46E5] text-sm text-white">
-              B
-            </span>
-            BidX
-          </div>
+          <Logo />
           <button
             type="button"
             onClick={onClose}
@@ -71,7 +73,7 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
         )}
 
         <nav className="flex-1 space-y-1 px-3 py-2">
-          {navItems.map(({ to, label, icon: Icon }) => (
+          {(user?.role === "vendor" ? vendorNavItems : navItems).map(({ to, label, icon: Icon }) => (
             <NavLink
               key={to}
               to={to}

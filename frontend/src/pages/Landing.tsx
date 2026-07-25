@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import Logo from "../components/common/Logo";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -104,10 +105,7 @@ export default function Landing() {
       <header className="sticky top-0 z-40 border-b border-[#E5E7EB] bg-white/95 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
           <Link to="/" className="flex items-center gap-2.5 font-semibold text-[#111827]">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#2563EB] text-white">
-              B
-            </span>
-            BidX
+            <Logo />
           </Link>
           <nav className="hidden items-center gap-8 text-sm font-medium text-[#374151] lg:flex">
             <a href="#features" className="hover:text-[#111827]">Features</a>
@@ -190,7 +188,7 @@ export default function Landing() {
               <div className="mb-5 grid grid-cols-2 gap-3">
                 <div className="rounded-xl bg-[#FAFAFA] p-4">
                   <p className="text-xs text-[#6B7280]">Lowest bid</p>
-                  <p className="mt-1 text-2xl font-semibold text-[#16a34a]">$4,120</p>
+                  <p className="mt-1 text-2xl font-semibold text-[#16a34a]">₹4,120</p>
                 </div>
                 <div className="rounded-xl bg-[#FAFAFA] p-4">
                   <p className="text-xs text-[#6B7280]">Vendors competing</p>
@@ -199,9 +197,9 @@ export default function Landing() {
               </div>
               <div className="space-y-2">
                 {[
-                  { name: "MedSupply Co.", amount: "$4,120" },
-                  { name: "Vantage Health", amount: "$4,340" },
-                  { name: "CorePharm Ltd.", amount: "$4,590" },
+                  { name: "MedSupply Co.", amount: "₹4,120" },
+                  { name: "Vantage Health", amount: "₹4,340" },
+                  { name: "CorePharm Ltd.", amount: "₹4,590" },
                 ].map((bid) => (
                   <div
                     key={bid.name}

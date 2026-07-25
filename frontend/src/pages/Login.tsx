@@ -7,6 +7,7 @@ import { Mail, Lock, ShieldCheck, TrendingDown, Users } from "lucide-react";
 import toast from "react-hot-toast";
 import Input from "../components/common/Input";
 import Button from "../components/common/Button";
+import Logo from "../components/common/Logo";
 import { useAuth } from "../hooks/useAuth";
 import type { ApiError } from "../types";
 
@@ -72,10 +73,7 @@ export default function Login() {
             to="/"
             className="mb-10 inline-flex items-center gap-2 font-semibold text-[#111827]"
           >
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#2563EB] to-[#4F46E5] text-white">
-              B
-            </span>
-            BidX
+            <Logo />
           </Link>
 
           <h1 className="text-2xl font-semibold tracking-tight text-[#111827]">

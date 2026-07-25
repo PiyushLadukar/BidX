@@ -23,6 +23,7 @@ export default function Profile() {
     aiAlerts: true,
     weeklyDigest: false,
   });
+  const showAiAlerts = user?.role === "hospital";
 
   if (!user) return null;
 
@@ -125,7 +126,9 @@ export default function Profile() {
         <div className="divide-y divide-[#E5E7EB]">
           {[
             { key: "auctionUpdates" as const, label: "Auction status updates", description: "Bid activity and auction closures." },
-            { key: "aiAlerts" as const, label: "AI risk alerts", description: "Pricing anomalies flagged in real time." },
+            ...(showAiAlerts
+              ? [{ key: "aiAlerts" as const, label: "AI risk alerts", description: "Pricing anomalies flagged in real time." }]
+              : []),
             { key: "weeklyDigest" as const, label: "Weekly digest", description: "A weekly summary of procurement activity." },
           ].map((item) => (
             <div key={item.key} className="flex items-center justify-between py-3.5 first:pt-0 last:pb-0">

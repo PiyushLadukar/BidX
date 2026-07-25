@@ -50,6 +50,8 @@ export interface Auction {
   closed_at?: string | null;
   tenant_id?: number;
   bid_count?: number;
+  winning_bid?: number | null;
+  winner_vendor_id?: number | null;
 }
 
 export interface CreateAuctionPayload {

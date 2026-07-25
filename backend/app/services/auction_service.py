@@ -1,6 +1,9 @@
+from datetime import datetime, timezone
+
 from sqlalchemy.orm import Session
 
 from app.models.auction import Auction
+from app.models.bid import Bid
 from app.schemas.auction import AuctionCreate, AuctionUpdate
 
 
@@ -62,11 +65,22 @@ class AuctionService:
     def close(
         db: Session,
         auction: Auction,
-      ):
+    ):
+        winning_bid = (
+            db.query(Bid)
+            .filter(Bid.auction_id == auction.id)
+            .order_by(Bid.bid_amount.asc())
+            .first()
+        )
 
-     auction.status = "closed"
+        auction.status = "closed"
+        auction.closed_at = datetime.now(timezone.utc)
 
-     db.commit()
-     db.refresh(auction)
+        if winning_bid is not None:
+            auction.winner_vendor_id = winning_bid.vendor_id
+            auction.winning_bid = winning_bid.bid_amount
 
-     return auction    
+        db.commit()
+        db.refresh(auction)
+
+        return auction

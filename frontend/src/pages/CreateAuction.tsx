@@ -157,7 +157,7 @@ export default function CreateAuction() {
 
           <div className="grid grid-cols-2 gap-4">
             <Input
-              label="Starting price (USD)"
+              label="Starting price (INR)"
               type="number"
               step="0.01"
               min="0"
