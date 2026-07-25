@@ -1,5 +1,6 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
 from app.database.database import Base, engine
@@ -26,6 +27,18 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "https://bidx-e0wt.onrender.com",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 @app.get("/")
 def root():
@@ -41,6 +54,25 @@ def health():
         "status": "healthy",
     }
 
+@app.get("/debug")
+def debug():
+    return {
+        "app": "BidX",
+        "cors_version": "2026-07-25-v2",
+        "cors_origins": [
+            "http://localhost:5173",
+            "http://127.0.0.1:5173",
+        ],
+    }
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 app.include_router(auth_router)
 app.include_router(auction_router)
 app.include_router(bid_router)
