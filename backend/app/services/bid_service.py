@@ -11,6 +11,14 @@ from app.services.ai_service import AIService
 class BidService:
 
     @staticmethod
+    def _enrich_bid_with_vendor(bid: Bid) -> Bid:
+        """Add vendor name and company name to bid object for serialization"""
+        if bid.vendor:
+            bid.vendor_name = bid.vendor.full_name
+            bid.company_name = bid.vendor.company_name
+        return bid
+
+    @staticmethod
     def create(
         db: Session,
         auction_id: int,
@@ -77,7 +85,7 @@ class BidService:
             except RuntimeError:
                 pass
 
-            return existing_bid, None
+            return BidService._enrich_bid_with_vendor(existing_bid), None
 
         # -------------------------
         # Create New Bid
@@ -116,7 +124,7 @@ class BidService:
         except RuntimeError:
             pass
 
-        return bid, None
+        return BidService._enrich_bid_with_vendor(bid), None
 
     @staticmethod
     def get_bids(
@@ -124,12 +132,14 @@ class BidService:
         auction_id: int,
     ):
 
-        return (
+        bids = (
             db.query(Bid)
             .filter(Bid.auction_id == auction_id)
             .order_by(Bid.bid_amount.asc())
             .all()
         )
+        
+        return [BidService._enrich_bid_with_vendor(bid) for bid in bids]
 
     @staticmethod
     def get_lowest_bid(
@@ -137,9 +147,11 @@ class BidService:
         auction_id: int,
     ):
 
-        return (
+        bid = (
             db.query(Bid)
             .filter(Bid.auction_id == auction_id)
             .order_by(Bid.bid_amount.asc())
             .first()
         )
+        
+        return BidService._enrich_bid_with_vendor(bid) if bid else None

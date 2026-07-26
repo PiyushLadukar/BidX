@@ -473,7 +473,7 @@ export default function Landing() {
                 Built by
               </p>
               <p className="text-lg font-semibold text-[#111827]">Piyush Ladukar</p>
-              <p className="text-sm text-[#6B7280]">Designed and built this end to end.</p>
+              <p className="text-sm text-[#6B7280]">Built By Curiosity and Ambition </p>
             </div>
             <div className="flex shrink-0 gap-2">
               <a
