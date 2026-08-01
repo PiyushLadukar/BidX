@@ -12,14 +12,11 @@ from app.routers.bid import router as bid_router
 from app.routers.ai_alert import router as ai_router
 from app.routers.websocket import router as websocket_router
 from app.models import *
-
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     Base.metadata.create_all(bind=engine)
     print("✅ Database tables created successfully!")
     yield
-
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
