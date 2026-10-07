@@ -18,7 +18,7 @@ import Input from "../components/common/Input";
 import Modal from "../components/common/Modal";
 import { PageLoading } from "../components/common/Loading";
 import EmptyState from "../components/common/EmptyState";
-import { formatCurrency, formatDate, getCountdown } from "../utils/helpers";
+import { formatCurrency, formatDate, getCountdown, getEffectiveStatus } from "../utils/helpers";
 import { AUCTION_STATUS_LABEL } from "../utils/constants";
 import type { ApiError } from "../types";
 
@@ -82,6 +82,7 @@ export default function AuctionDetails() {
   const isHospital = user?.role === "hospital";
   const isVendor = user?.role === "vendor";
   const status = (auction.status ?? "active").toLowerCase();
+  const displayStatus = getEffectiveStatus(status, auction.end_time);
   const canBid = isVendor && (status === "active" || status === "open") && !countdown.expired;
   const canClose = isHospital && (status === "active" || status === "open");
 
@@ -120,6 +121,7 @@ export default function AuctionDetails() {
       setBidModalOpen(false);
       queryClient.invalidateQueries({ queryKey: ["bids", id] });
       queryClient.invalidateQueries({ queryKey: ["auction", id] });
+      queryClient.invalidateQueries({ queryKey: ["auctions"] });
     } catch (err) {
       const message =
         (err as { response?: { data?: ApiError } })?.response?.data?.detail ??
@@ -163,8 +165,8 @@ export default function AuctionDetails() {
               <h1 className="text-xl font-semibold tracking-tight text-[#111827]">
                 {auction.title}
               </h1>
-              <Badge tone={statusTone(status)}>
-                {AUCTION_STATUS_LABEL[status] ?? auction.status}
+              <Badge tone={statusTone(displayStatus)}>
+                {AUCTION_STATUS_LABEL[displayStatus] ?? auction.status}
               </Badge>
             </div>
             <p className="max-w-2xl text-sm text-[#6B7280]">{auction.description}</p>

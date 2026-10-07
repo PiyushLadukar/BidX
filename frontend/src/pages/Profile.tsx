@@ -141,13 +141,13 @@ export default function Profile() {
                 role="switch"
                 aria-checked={notifications[item.key]}
                 onClick={() => toggle(item.key)}
-                className={`focus-ring relative h-6 w-11 shrink-0 rounded-full transition-colors ${
+                className={`focus-ring relative inline-flex h-6 w-11 shrink-0 items-center justify-start overflow-hidden rounded-full p-0 transition-colors ${
                   notifications[item.key] ? "bg-[#2563EB]" : "bg-[#E5E7EB]"
                 }`}
               >
                 <span
-                  className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${
-                    notifications[item.key] ? "translate-x-5" : "translate-x-0.5"
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${
+                    notifications[item.key] ? "translate-x-6" : "translate-x-1"
                   }`}
                 />
               </button>

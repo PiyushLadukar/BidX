@@ -35,7 +35,7 @@ export default function Badge({
 }
 
 export function statusTone(status: string): Tone {
-  if (status === "open") return "success";
+  if (status === "open" || status === "active") return "success";
   if (status === "closed") return "neutral";
   if (status === "pending") return "warning";
   return "neutral";
