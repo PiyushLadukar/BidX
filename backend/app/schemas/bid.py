@@ -23,7 +23,7 @@ class BidResponse(BaseModel):
     class Config:
         from_attributes = True
 
-    @field_serializer('vendor_name', 'company_name', mode='before')
+    @field_serializer('vendor_name', 'company_name', mode='plain')
     def serialize_vendor_info(self, value):
         # These will be populated by the service before schema conversion
         return value

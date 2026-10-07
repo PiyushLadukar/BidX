@@ -1,10 +1,23 @@
 import { Bell, Menu, Search } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { initials } from "../../utils/helpers";
 
 export default function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
   const { user } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const onAuctionsPage = location.pathname === "/auctions";
+  const query = onAuctionsPage ? new URLSearchParams(location.search).get("q") ?? "" : "";
+
+  // The query lives in the URL so the Auctions page (and its own search box) stay in sync.
+  const updateQuery = (value: string) => {
+    const params = new URLSearchParams(onAuctionsPage ? location.search : "");
+    if (value) params.set("q", value);
+    else params.delete("q");
+    const search = params.toString();
+    navigate(`/auctions${search ? `?${search}` : ""}`, { replace: onAuctionsPage });
+  };
 
   return (
     <header className="glass sticky top-0 z-30 flex h-16 items-center justify-between px-4 sm:px-6">
@@ -17,10 +30,17 @@ export default function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
         >
           <Menu size={19} />
         </button>
-        <div className="hidden items-center gap-2 rounded-xl border border-[#E5E7EB] bg-white px-3.5 py-2 text-sm text-[#9CA3AF] shadow-sm sm:flex sm:w-72">
-          <Search size={15} />
-          <span>Search auctions, vendors…</span>
-        </div>
+        <label className="focus-within:border-[#2563EB] hidden items-center gap-2 rounded-xl border border-[#E5E7EB] bg-white px-3.5 py-2 text-sm text-[#9CA3AF] shadow-sm sm:flex sm:w-72">
+          <Search size={15} className="shrink-0" />
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => updateQuery(e.target.value)}
+            placeholder="Search auctions…"
+            aria-label="Search auctions"
+            className="w-full bg-transparent text-[#111827] outline-none placeholder:text-[#9CA3AF]"
+          />
+        </label>
       </div>
 
       <div className="flex items-center gap-3">

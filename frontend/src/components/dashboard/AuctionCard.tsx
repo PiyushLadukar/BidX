@@ -1,12 +1,13 @@
 import { Link } from "react-router-dom";
 import { Clock, Package, ArrowUpRight } from "lucide-react";
 import Badge, { statusTone } from "../common/Badge";
-import { formatCurrency, getCountdown } from "../../utils/helpers";
+import { formatCurrency, getCountdown, getEffectiveStatus } from "../../utils/helpers";
 import { AUCTION_STATUS_LABEL } from "../../utils/constants";
 import type { Auction } from "../../types";
 
 export default function AuctionCard({ auction }: { auction: Auction }) {
   const countdown = getCountdown(auction.end_time ?? auction.start_time ?? auction.created_at ?? new Date().toISOString());
+  const status = getEffectiveStatus(auction.status, auction.end_time);
 
   return (
     <Link
@@ -17,8 +18,8 @@ export default function AuctionCard({ auction }: { auction: Auction }) {
         <h3 className="line-clamp-1 text-base font-semibold text-[#111827] group-hover:text-[#2563EB]">
           {auction.title}
         </h3>
-        <Badge tone={statusTone(auction.status)}>
-          {AUCTION_STATUS_LABEL[auction.status] ?? auction.status}
+        <Badge tone={statusTone(status)}>
+          {AUCTION_STATUS_LABEL[status] ?? auction.status}
         </Badge>
       </div>
 

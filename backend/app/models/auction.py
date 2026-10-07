@@ -1,8 +1,9 @@
-from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Float
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Float, select
+from sqlalchemy.orm import relationship, column_property
 from sqlalchemy.sql import func
 
 from app.database.database import Base
+from app.models.bid import Bid
 
 
 class Auction(Base):
@@ -104,4 +105,12 @@ class Auction(Base):
     winner = relationship(
         "User",
         foreign_keys=[winner_vendor_id]
+    )
+
+    # Live count of placed bids, loaded with the auction so API responses include it.
+    bid_count = column_property(
+        select(func.count(Bid.id))
+        .where(Bid.auction_id == id)
+        .correlate_except(Bid)
+        .scalar_subquery()
     )

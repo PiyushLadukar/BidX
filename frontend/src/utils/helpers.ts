@@ -74,6 +74,13 @@ export function getCountdown(closingTime: string): {
   return { label: `${minutes}m ${seconds}s left`, expired: false };
 }
 
+// Treat an auction as closed once its end_time has passed, even if the DB status hasn't caught up.
+export function getEffectiveStatus(status: string | undefined, endTime?: string): string {
+  const normalized = (status ?? "active").toLowerCase();
+  if (endTime && new Date(endTime).getTime() <= Date.now()) return "closed";
+  return normalized;
+}
+
 export function initials(name: string): string {
   return name
     .split(" ")

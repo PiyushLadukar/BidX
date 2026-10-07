@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import { Search, PlusCircle, Gavel, ChevronLeft, ChevronRight, ArrowDownUp } from "lucide-react";
 import { usePolling } from "../hooks/usePolling";
 import { getAuctions } from "../api/auctions";
@@ -31,16 +31,21 @@ const PAGE_SIZE = 9;
 export default function Auctions() {
   const { user } = useAuth();
   const { data: auctions, isLoading } = usePolling(["auctions"], getAuctions);
-  const [query, setQuery] = useState("");
+  // Shared with the navbar search via the ?q= URL param.
+  const [searchParams, setSearchParams] = useSearchParams();
+  const query = searchParams.get("q") ?? "";
   const [status, setStatus] = useState<AuctionStatus | "all">("all");
   const [sort, setSort] = useState<SortValue>("newest");
   const [page, setPage] = useState(1);
 
   const filtered = useMemo(() => {
     const list = (auctions ?? []).filter((a) => {
+      const q = query.trim().toLowerCase();
       const matchesQuery =
-        a.title.toLowerCase().includes(query.toLowerCase()) ||
-        (a.description ?? "").toLowerCase().includes(query.toLowerCase());
+        !q ||
+        a.title.toLowerCase().includes(q) ||
+        (a.category ?? "").toLowerCase().includes(q) ||
+        (a.description ?? "").toLowerCase().includes(q);
       const matchesStatus = status === "all" || a.status === status || (status === "active" && (a.status === "active" || a.status === "open"));
       return matchesQuery && matchesStatus;
     });
@@ -64,9 +69,21 @@ export default function Auctions() {
   const page_ = Math.min(page, totalPages);
   const paged = filtered.slice((page_ - 1) * PAGE_SIZE, page_ * PAGE_SIZE);
 
-  const updateQuery = (v: string) => {
-    setQuery(v);
+  // Reset pagination whenever the query changes, including from the navbar.
+  useEffect(() => {
     setPage(1);
+  }, [query]);
+
+  const updateQuery = (v: string) => {
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        if (v) next.set("q", v);
+        else next.delete("q");
+        return next;
+      },
+      { replace: true }
+    );
   };
   const updateStatus = (v: AuctionStatus | "all") => {
     setStatus(v);
@@ -150,7 +167,11 @@ export default function Auctions() {
         <EmptyState
           icon={Gavel}
           title="No auctions found"
-          description="Try adjusting your search or filters."
+          description={
+            query.trim()
+              ? `No auctions match "${query.trim()}". Try a different search or adjust your filters.`
+              : "Try adjusting your search or filters."
+          }
         />
       ) : (
         <>

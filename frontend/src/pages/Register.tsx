@@ -17,7 +17,7 @@ const schema = z.object({
   company_name: z.string().min(2, "Enter your organization name").optional().or(z.literal("")),
   email: z.string().min(1, "Email is required").email("Enter a valid email"),
   password: z.string().min(8, "Use at least 8 characters"),
-  role: z.enum(["hospital", "vendor"], { message: "Choose an account type" }),
+  role: z.enum(["hospital", "vendor"], { error: "Please select an account type" }),
   tenant_name: z.string().min(2, "Enter your tenant name"),
 });
 
@@ -64,7 +64,8 @@ export default function Register() {
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: { role: "hospital", tenant_name: "" },
+    // No role preselected: users must explicitly pick hospital or vendor.
+    defaultValues: { role: undefined, tenant_name: "" },
   });
 
   const role = watch("role");
@@ -115,20 +116,30 @@ export default function Register() {
             )}
 
             <div>
-              <p className="mb-2 text-sm font-medium text-[#111827]">
+              <p id="role-label" className="mb-2 text-sm font-medium text-[#111827]">
                 I'm signing up as
               </p>
-              <div className="grid grid-cols-2 gap-3">
+              <div
+                role="radiogroup"
+                aria-labelledby="role-label"
+                aria-invalid={Boolean(errors.role)}
+                aria-describedby={errors.role ? "role-error" : undefined}
+                className="grid grid-cols-2 gap-3"
+              >
                 {roleCards.map(({ value, icon: Icon, title, description }) => (
                   <button
                     key={value}
                     type="button"
-                    onClick={() => setValue("role", value)}
+                    role="radio"
+                    aria-checked={role === value}
+                    onClick={() => setValue("role", value, { shouldValidate: true })}
                     className={cn(
                       "focus-ring rounded-xl border p-3.5 text-left transition-all",
                       role === value
                         ? "border-[#2563EB] bg-[#EEF4FF] ring-1 ring-[#2563EB]"
-                        : "border-[#E5E7EB] hover:bg-[#F8FAFC]"
+                        : errors.role
+                          ? "border-[#EF4444] hover:bg-[#F8FAFC]"
+                          : "border-[#E5E7EB] hover:bg-[#F8FAFC]"
                     )}
                   >
                     <Icon
@@ -140,6 +151,11 @@ export default function Register() {
                   </button>
                 ))}
               </div>
+              {errors.role && (
+                <p id="role-error" className="mt-1.5 text-xs text-[#EF4444]">
+                  {errors.role.message}
+                </p>
+              )}
             </div>
 
             <Input
